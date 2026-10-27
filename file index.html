@@ -1,0 +1,348 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Find - Lost & Found</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        header {
+            background: #1d4ed8;
+            color: white;
+            padding: 22px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        nav {
+            background: #1e40af;
+            padding: 12px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 15px;
+            font-weight: bold;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 35px 15px;
+            background: white;
+        }
+
+        .hero h2 {
+            font-size: 27px;
+            margin-bottom: 12px;
+            color: #1d4ed8;
+        }
+
+        .hero p {
+            margin-bottom: 20px;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: #1e40af;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 25px auto;
+            padding: 15px;
+        }
+
+        .form-box {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px #cbd5e1;
+        }
+
+        .form-box h2, .items-section h2 {
+            margin-bottom: 18px;
+            color: #1d4ed8;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+        }
+
+        .search {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search input {
+            flex: 1;
+        }
+
+        .items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #cbd5e1;
+        }
+
+        .card h3 {
+            margin-bottom: 12px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .card p {
+            margin: 8px 0;
+            overflow-wrap: anywhere;
+        }
+
+        footer {
+            background: #1e3a8a;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        @media(max-width: 600px) {
+            nav a {
+                margin: 7px;
+                display: inline-block;
+            }
+
+            .search {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>🎒 Campus Find</h1>
+        <p>Lost Something? Find It Here!</p>
+    </header>
+
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#report">Report Item</a>
+        <a href="#items">Find Items</a>
+    </nav>
+
+    <section class="hero" id="home">
+        <h2>Lost & Found Portal</h2>
+        <p>A simple platform to help students find their lost belongings on campus.</p>
+        <a href="#report"><button>Report an Item</button></a>
+        <a href="#items"><button>Find an Item</button></a>
+    </section>
+
+    <div class="container">
+
+        <section class="form-box" id="report">
+            <h2>📝 Report Lost or Found Item</h2>
+
+            <form id="itemForm">
+                <select id="type" required>
+                    <option value="">Select Item Type</option>
+                    <option value="Lost">Lost Item</option>
+                    <option value="Found">Found Item</option>
+                </select>
+
+                <input type="text" id="name"
+                    placeholder="Item Name (e.g. Wallet)" required>
+
+                <input type="text" id="location"
+                    placeholder="Location on Campus" required>
+
+                <input type="date" id="date" required>
+
+                <input type="text" id="contact"
+                    placeholder="Contact Details (Email or Phone)" required>
+
+                <textarea id="description"
+                    placeholder="Item Description" rows="3" required></textarea>
+
+                <button type="submit">Submit Report</button>
+            </form>
+        </section>
+
+        <section class="items-section" id="items">
+            <h2>🔍 Find Lost & Found Items</h2>
+
+            <div class="search">
+                <input type="text" id="searchInput"
+                    placeholder="Search item or location..."
+                    oninput="displayItems()">
+
+                <select id="filter" onchange="displayItems()">
+                    <option value="All">All Items</option>
+                    <option value="Lost">Lost Items</option>
+                    <option value="Found">Found Items</option>
+                </select>
+            </div>
+
+            <div class="items" id="itemList"></div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>© 2026 Campus Find | Lost & Found Portal</p>
+        <p>Helping Students Reunite with Their Belongings ❤️</p>
+    </footer>
+
+    <script>
+        let items = [
+            {
+                type: "Lost",
+                name: "Black Wallet",
+                location: "College Library",
+                date: "2026-10-25",
+                contact: "student@example.com",
+                description: "A black wallet containing an ID card."
+            },
+            {
+                type: "Found",
+                name: "Water Bottle",
+                location: "College Canteen",
+                date: "2026-10-24",
+                contact: "9876543210",
+                description: "A blue water bottle found on a table."
+            },
+            {
+                type: "Lost",
+                name: "Student ID Card",
+                location: "Computer Lab",
+                date: "2026-10-23",
+                contact: "student2@example.com",
+                description: "A college identity card."
+            }
+        ];
+
+        const form = document.getElementById("itemForm");
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const item = {
+                type: document.getElementById("type").value,
+                name: document.getElementById("name").value.trim(),
+                location: document.getElementById("location").value.trim(),
+                date: document.getElementById("date").value,
+                contact: document.getElementById("contact").value.trim(),
+                description: document.getElementById("description").value.trim()
+            };
+
+            items.unshift(item);
+            form.reset();
+            displayItems();
+
+            alert("Your item report has been submitted successfully!");
+        });
+
+        function displayItems() {
+            const list = document.getElementById("itemList");
+            const search = document.getElementById("searchInput")
+                .value.toLowerCase();
+            const filter = document.getElementById("filter").value;
+
+            list.innerHTML = "";
+
+            const filteredItems = items.filter(function(item) {
+                const matchesSearch =
+                    item.name.toLowerCase().includes(search) ||
+                    item.location.toLowerCase().includes(search);
+
+                const matchesType =
+                    filter === "All" || item.type === filter;
+
+                return matchesSearch && matchesType;
+            });
+
+            if (filteredItems.length === 0) {
+                list.innerHTML = "<p>No items found.</p>";
+                return;
+            }
+
+            filteredItems.forEach(function(item) {
+                const card = document.createElement("div");
+                card.className = "card";
+
+                const badge = document.createElement("span");
+                badge.className = "badge";
+                badge.textContent = item.type + " Item";
+
+                const title = document.createElement("h3");
+                title.textContent = item.name;
+
+                card.append(badge, title);
+
+                [
+                    "Location: " + item.location,
+                    "Date: " + item.date,
+                    "Description: " + item.description,
+                    "Contact: " + item.contact
+                ].forEach(function(text) {
+                    const p = document.createElement("p");
+                    p.textContent = text;
+                    card.appendChild(p);
+                });
+
+                list.appendChild(card);
+            });
+        }
+
+        displayItems();
+    </script>
+
+</body>
+</html>
+```
